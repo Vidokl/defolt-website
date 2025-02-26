@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин еды</title>
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff6f61;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .order {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Два столбца */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .product-card button:hover {
+            background-color: #ff5b4d;
+        }
+
+        .product-card .quantity-control {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .product-card .quantity-control button {
+            background-color: #ddd;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .product-card .quantity-control span {
+            font-size: 18px;
+            margin: 0 15px;
+        }
+
+        .product-card span {
+            display: block;
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .total {
+            font-size: 24px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .order-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .order-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .order {
+                grid-template-columns: 1fr; /* Один столбец на маленьких экранах */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    🍕 Магазин еды 🍔
+</header>
+
+<div class="order">
+    <!-- Карточки с продуктами -->
+    <div class="product-card">
+        <h3>Pizza 🍕</h3>
+        <div class="quantity-control">
+            <button onclick="updateCart('pizza', -1)">-</button>
+            <span id="pizza-count">0</span>
+            <button onclick="updateCart('pizza', 1)">+</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <h3>Chicken 🍗</h3>
+        <div class="quantity-control">
+            <button onclick="updateCart('chicken', -1)">-</button>
+            <span id="chicken-count">0</span>
+            <button onclick="updateCart('chicken', 1)">+</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <h3>Fries 🍟</h3>
+        <div class="quantity-control">
+            <button onclick="updateCart('fries', -1)">-</button>
+            <span id="fries-count">0</span>
+            <button onclick="updateCart('fries', 1)">+</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <h3>Hotdog 🌭</h3>
+        <div class="quantity-control">
+            <button onclick="updateCart('hotdog', -1)">-</button>
+            <span id="hotdog-count">0</span>
+            <button onclick="updateCart('hotdog', 1)">+</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <h3>Burger 🍔</h3>
+        <div class="quantity-control">
+            <button onclick="updateCart('burger', -1)">-</button>
+            <span id="burger-count">0</span>
+            <button onclick="updateCart('burger', 1)">+</button>
+        </div>
+    </div>
+</div>
+
+<div class="total">
+    💰 Итого: <span id="total">0</span> XTR
+</div>
+
+<button class="order-btn" onclick="sendOrder()">🛒 Заказать</button>
+
+<script>
+    let cart = {
+        pizza: 0,
+        chicken: 0,
+        fries: 0,
+        hotdog: 0,
+        burger: 0
+    };
+
+    // Функция обновления корзины
+    function updateCart(item, change) {
+        if (cart[item] + change >= 0) {
+            cart[item] += change;
+            document.getElementById(item + '-count').innerText = cart[item];
+            updateTotal();
+        }
+    }
+
+    // Функция обновления итоговой суммы
+    function updateTotal() {
+        let total = (cart.pizza + cart.chicken + cart.fries + cart.hotdog + cart.burger) * 5; // 5 XTR за каждый товар
+        document.getElementById('total').innerText = total;
+    }
+
+    // Функция отправки заказа
+    function sendOrder() {
+        let total = (cart.pizza + cart.chicken + cart.fries + cart.hotdog + cart.burger) * 5;
+        if (total === 0) {
+            alert("Выберите хотя бы один товар!");
+            return;
+        }
+
+        let message = "🛒 Ваш заказ:\n";
+        for (let item in cart) {
+            if (cart[item] > 0) {
+                let emoji = item === 'pizza' ? '🍕' :
+                            item === 'chicken' ? '🍗' :
+                            item === 'fries' ? '🍟' :
+                            item === 'hotdog' ? '🌭' :
+                            '🍔';
+                message += `${emoji} ${item}: ${cart[item]} шт.\n`;
+            }
+        }
+        message += `💰 Итого: ${total} XTR\n\nОплатите заказ, нажав на кнопку ниже 👇`;
+
+        let telegramBotToken = "7867212901:AAFuD978L13nZcag6cwaPpPYRuKmD0gmVjc"; // Токен вашего бота
+        let chatId = "5666282083"; // ID чата пользователя
+
+        // Ссылка на API Telegram для отправки инвойса
+        let telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendInvoice?chat_id=${chatId}&title=Оплата заказа&description=Оплата вашего заказа в магазине&payload=unique_payload&provider_token=&currency=XTR&prices=[{"label":"Общая сумма","amount":${total * 1}}]`;
+
+        // Открываем ссылку с инвойсом для оплаты
+        window.open(telegramUrl, "_blank");
+    }
+</script>
+
+</body>
+</html>
